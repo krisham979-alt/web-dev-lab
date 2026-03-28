@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar</title>
+    <link rel="stylesheet" href="style.css">
+       
+</head>
+<body class="calendar">
+    <nav class="navbar">
+        <div class="logo"><h1>My Portfolio</h1></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="project.html">Projects</a></li>
+            <li><a href="contact.html">Contacts</a></li>
+            <li><a href="calendar.html">Calendar</a></li>
+        </ul>
+    </nav>
+
+    <main class="calendar-page">
+        <div class="calendar-card">
+            <div class="calendar-header">
+                <h1 id="monthYear">March 2026</h1>
+                <div class="calendar-nav">
+                    <button type="button" id="prevMonth" aria-label="Previous month">‹</button>
+                    <button type="button" id="nextMonth" aria-label="Next month">›</button>
+                </div>
+            </div>
+            <div class="weekdays">
+                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+                <span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+            <div class="days" id="days" role="grid" aria-label="Calendar days"></div>
+        </div>
+    </main>
+
+    <script>
+        (function () {
+            const monthYearEl = document.getElementById('monthYear');
+            const daysEl = document.getElementById('days');
+            const prevBtn = document.getElementById('prevMonth');
+            const nextBtn = document.getElementById('nextMonth');
+
+            let view = new Date();
+            view.setDate(1);
+
+            function sameDay(a, b) {
+                return a.getFullYear() === b.getFullYear() &&
+                    a.getMonth() === b.getMonth() &&
+                    a.getDate() === b.getDate();
+            }
+
+            function render() {
+                const y = view.getFullYear();
+                const m = view.getMonth();
+                const first = new Date(y, m, 1);
+                const last = new Date(y, m + 1, 0);
+                const startPad = first.getDay();
+                const daysInMonth = last.getDate();
+                const today = new Date();
+
+                monthYearEl.textContent = first.toLocaleString('en-US', {
+                    month: 'long',
+                    year: 'numeric'
+                });
+
+                daysEl.innerHTML = '';
+                for (let i = 0; i < startPad; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'day-cell empty';
+                    cell.setAttribute('aria-hidden', 'true');
+                    daysEl.appendChild(cell);
+                }
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'day-cell';
+                    cell.textContent = String(d);
+                    cell.setAttribute('role', 'gridcell');
+                    const cellDate = new Date(y, m, d);
+                    if (sameDay(cellDate, today)) {
+                        cell.classList.add('today');
+                        cell.setAttribute('aria-current', 'date');
+                    }
+                    daysEl.appendChild(cell);
+                }
+            }
+
+            prevBtn.addEventListener('click', function () {
+                view.setMonth(view.getMonth() - 1);
+                render();
+            });
+            nextBtn.addEventListener('click', function () {
+                view.setMonth(view.getMonth() + 1);
+                render();
+            });
+
+            render();
+        })();
+    </script>
+</body>
+</html>
